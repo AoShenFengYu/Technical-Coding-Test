@@ -39,7 +39,7 @@ public class PagerAdapter extends BaseViewPagerAdapter<PagerAdapter.ItemViewHold
 
     @Override
     protected void onPageSelected(int position) {
-        Log.e("AAAAAAAA", "onPageSelected " + position);
+
     }
 
     @Override
@@ -93,7 +93,11 @@ public class PagerAdapter extends BaseViewPagerAdapter<PagerAdapter.ItemViewHold
 
         private void initList() {
             adapter = new ListAdapter(mContext, mPresenter, list);
+
+            list.setItemAnimator(null);
+            
             list.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+
             list.setAdapter((ListAdapter) adapter);
         }
     }

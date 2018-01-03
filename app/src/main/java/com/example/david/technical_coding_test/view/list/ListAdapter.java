@@ -146,7 +146,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     @Override
     public void update(PagerItem pagerItem) {
         this.mPagerItem = pagerItem;
-        Log.e("AAAAA", "update " + pagerItem.getPosition());
+
         reset();
 
         showLoadOnDemandProgress();
@@ -154,8 +154,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
         mPresenter.getListData(pagerItem, IModel.DownloadMode.INIT, new IModel.Callback<ListDataBundle>() {
             @Override
             public void onResult(boolean isSuccessful, ListDataBundle listDataBundle) {
-                Log.e("AAAAA", "取得資料");
-
                 update(listDataBundle);
             }
         });
@@ -168,14 +166,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
 
         switch (mListDataBundle.getDownloadMode()) {
             case IModel.DownloadMode.INIT:
-                Log.e("AAAAA", "取得資料後的update "+getItemCount());
-
                 notifyItemRangeInserted(0, getItemCount());
                 break;
 
             case IModel.DownloadMode.NEXT_PAGE:
-
-
                 break;
 
             case IModel.DownloadMode.PRE_PAGE:
@@ -203,15 +197,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     private void showLoadOnDemandProgress() {
         mIsLoading = true;
         notifyItemInserted(getItemCount() - 1);
-        Log.e("AAAAA", "showLoadOnDemandProgress ");
 
     }
 
     private void removeLoadOnDemandProgress() {
         mIsLoading = false;
         notifyItemRemoved(getItemCount() - 1);
-        Log.e("AAAAA", "removeLoadOnDemandProgress ");
-
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
