@@ -1,4 +1,4 @@
-package com.example.david.technical_coding_test.view;
+package com.example.david.technical_coding_test.view.pager;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -45,7 +45,7 @@ public abstract class BaseViewPagerAdapter<VH extends BaseViewPagerAdapter.ViewH
                 VH holder = getViewHolder(position);
 
                 if (holder != null) {
-                    onBindViewHolder(holder, position);
+//                    onBindViewHolder(holder, position);
                 }
 
                 BaseViewPagerAdapter.this.onPageSelected(position);

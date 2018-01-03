@@ -1,46 +1,83 @@
-package com.example.david.technical_coding_test.view;
+package com.example.david.technical_coding_test.view.pager;
 
 
 import android.content.Context;
-import android.os.Build;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.david.technical_coding_test.IPresenter;
+import com.example.david.technical_coding_test.R;
+import com.example.david.technical_coding_test.model.data_model.pager.PagerItem;
+import com.example.david.technical_coding_test.view.list.IListAdapter;
+import com.example.david.technical_coding_test.view.list.ListAdapter;
+
+import java.util.ArrayList;
 
 /**
  * Created by David on 2018/1/2.
  */
 
-public class PagerAdapter extends BaseViewPagerAdapter {
+public class PagerAdapter extends BaseViewPagerAdapter<PagerAdapter.ItemViewHolder> implements IPagerAdapter {
 
-    public PagerAdapter(Context context, ViewPager viewPager) {
+    private IPresenter mPresenter;
+
+    /**
+     * Data
+     **/
+    private ArrayList<PagerItem> mPagerItems;
+
+    public PagerAdapter(Context context, IPresenter presenter, ViewPager viewPager) {
         super(context, viewPager);
+        this.mPresenter = presenter;
+
+        mPagerItems = new ArrayList<>();
     }
 
     @Override
     protected void onPageSelected(int position) {
-
+        Log.e("AAAAAAAA", "onPageSelected " + position);
     }
 
     @Override
-    protected void onBindViewHolder(ViewHolder holder, int page) {
+    protected void onBindViewHolder(ItemViewHolder holder, int page) {
+        PagerItem pagerItem = mPagerItems.get(page);
 
+        holder.adapter.update(pagerItem);
     }
 
     @Override
     protected int getItemCount() {
-        return 0;
+        if (mPagerItems == null) {
+            return 0;
+
+        } else {
+            return mPagerItems.size();
+        }
     }
 
     @Override
-    protected ViewHolder onCreateViewHolder(ViewGroup parent) {
-        return null;
+    protected ItemViewHolder onCreateViewHolder(ViewGroup parent) {
+        View itemView = mInflater.inflate(R.layout.view_pager_item, parent, false);
+
+        return new ItemViewHolder(itemView);
+    }
+
+    /**
+     * IPagerAdapter
+     **/
+    @Override
+    public void update() {
+        mPagerItems = mPresenter.getPageItems();
+        notifyDataSetChanged();
     }
 
     class ItemViewHolder extends BaseViewPagerAdapter.ViewHolder {
-
+        RecyclerView list;
+        IListAdapter adapter;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
@@ -49,44 +86,15 @@ public class PagerAdapter extends BaseViewPagerAdapter {
         }
 
         private void initLayout() {
-             = itemView.findViewById(R.id.symbol_view_pager_item_recycler_view);
-//            fastScroller = itemView.findViewById(R.id.symbol_view_pager_item_recycler_view_fast_scroll_bar);
+            list = itemView.findViewById(R.id.view_pager_item_list);
 
             initList();
-            initFastScroller();
-        }
-
-        private void initFastScroller() {
-//            fastScroller.attachRecyclerView(list);
         }
 
         private void initList() {
-            int itemSize = (int) (Tools.getRollerListHeight(mContext) * SymbolView.SYMBOL_VIEW_ITEM_SIZE);
-            int[] screenSize = Tools.getScreenSize(mContext);
-            int columnCount = screenSize[0] / itemSize;
-            SymbolSize symbolSize = new SymbolSize(columnCount, itemSize);
-            GridLayoutManager manager = new GridLayoutManager(mContext, columnCount, RecyclerView.VERTICAL, false);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                if (Tools.isSymbolTableRTLSupported(mContext)) {
-                    list.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
-
-                } else {
-                    list.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
-                }
-            }
-
-            adapter = new SymbolViewListAdapter(mContext, mSymbolView, list, symbolSize, mSymbolSelectedListener);
-
-            list.setLayoutManager(manager);
-            list.setItemAnimator(null);
-            list.setAdapter(adapter);
-        }
-
-        public void updateItemListAdapter(int position, int action, boolean canPage, boolean updateAll) {
-            SymbolTable symbolTable = mSymbolTables.get(position);
-
-            adapter.update(symbolTable, action, canPage, updateAll);
+            adapter = new ListAdapter(mContext, mPresenter, list);
+            list.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+            list.setAdapter((ListAdapter) adapter);
         }
     }
 

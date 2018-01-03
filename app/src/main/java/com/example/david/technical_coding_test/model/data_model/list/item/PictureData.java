@@ -1,4 +1,4 @@
-package com.example.david.technical_coding_test.model.data_model;
+package com.example.david.technical_coding_test.model.data_model.list.item;
 
 import com.example.david.technical_coding_test.model.data_model.base.BaseData;
 

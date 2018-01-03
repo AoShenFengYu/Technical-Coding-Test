@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
-    <ImageView
-        android:id="@+id/list_item_picture"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/list_item_picture_default_background"
-        android:scaleType="fitCenter" />
+        android:gravity="center"
+        android:text="Loading" />
 
 </android.support.constraint.ConstraintLayout>

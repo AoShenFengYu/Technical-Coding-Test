@@ -1,11 +1,14 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/view_pager_item_layout"
+    android:id="@+id/list_item_picture_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/view_pager_item_list"
+    <ImageView
+        android:id="@+id/list_item_picture"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/list_item_picture_default_background"
+        android:scaleType="fitCenter" />
 
 </android.support.constraint.ConstraintLayout>
