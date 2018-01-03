@@ -18,7 +18,6 @@ public class MainView implements IMainView {
 
     public final static int PAGE_COUNT = 3;
 
-
     private final Activity mActivity;
     private final IPresenter mPresenter;
 

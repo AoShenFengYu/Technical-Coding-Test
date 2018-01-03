@@ -1,7 +1,9 @@
 package com.example.david.technical_coding_test.view.list;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -144,27 +146,35 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
     @Override
     public void update(PagerItem pagerItem) {
         this.mPagerItem = pagerItem;
+        Log.e("AAAAA", "update " + pagerItem.getPosition());
+        reset();
 
         showLoadOnDemandProgress();
 
-        mPresenter.getListData(pagerItem, IModel.DownloadMode.NEXT_PAGE, new IModel.Callback<ListDataBundle>() {
+        mPresenter.getListData(pagerItem, IModel.DownloadMode.INIT, new IModel.Callback<ListDataBundle>() {
             @Override
             public void onResult(boolean isSuccessful, ListDataBundle listDataBundle) {
-                ListAdapter.this.mListDataBundle = listDataBundle;
+                Log.e("AAAAA", "取得資料");
 
-                update();
+                update(listDataBundle);
             }
         });
     }
 
-    private void showLoadOnDemandProgress() {
-        mIsLoading = true;
-        notifyItemInserted(getItemCount() - 1);
-    }
+    private void update(ListDataBundle listDataBundle) {
+        removeLoadOnDemandProgress();
 
-    private void update() {
+        ListAdapter.this.mListDataBundle = listDataBundle;
+
         switch (mListDataBundle.getDownloadMode()) {
+            case IModel.DownloadMode.INIT:
+                Log.e("AAAAA", "取得資料後的update "+getItemCount());
+
+                notifyItemRangeInserted(0, getItemCount());
+                break;
+
             case IModel.DownloadMode.NEXT_PAGE:
+
 
                 break;
 
@@ -173,11 +183,41 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
         }
     }
 
+    /**
+     * Reset
+     **/
+    private void reset() {
+        LinearLayoutManager manager = (LinearLayoutManager) mList.getLayoutManager();
+
+        if (manager.findFirstCompletelyVisibleItemPosition() != 0) {
+            mList.scrollToPosition(0);
+        }
+
+        this.mListDataBundle = ListDataBundle.create();
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Load on demand progress
+     **/
+    private void showLoadOnDemandProgress() {
+        mIsLoading = true;
+        notifyItemInserted(getItemCount() - 1);
+        Log.e("AAAAA", "showLoadOnDemandProgress ");
+
+    }
+
+    private void removeLoadOnDemandProgress() {
+        mIsLoading = false;
+        notifyItemRemoved(getItemCount() - 1);
+        Log.e("AAAAA", "removeLoadOnDemandProgress ");
+
+    }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private static final float HEIGHT_ITEM_LOADING = 0.1f;
-        private static final float HEIGHT_ITEM_PICTURE = 0.2f;
+        private static final float HEIGHT_ITEM_PICTURE = 0.35f;
         private static final float HEIGHT_ITEM_CARD = 0.25f;
 
         int viewType;
@@ -214,6 +254,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ItemViewHolder
                 case LOADING:
                     height = (int) (Tools.getScreenSize(mContext)[1] * HEIGHT_ITEM_LOADING);
                     itemView.getLayoutParams().height = height;
+                    itemView.getLayoutParams().width = Tools.getScreenSize(mContext)[0];
                     break;
             }
         }

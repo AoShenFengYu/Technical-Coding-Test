@@ -43,6 +43,7 @@ public interface IModel {
      **/
 
     class DownloadMode {
+        public final static int INIT = 2;
         public final static int NEXT_PAGE = 0;
         public final static int PRE_PAGE = 1;
     }

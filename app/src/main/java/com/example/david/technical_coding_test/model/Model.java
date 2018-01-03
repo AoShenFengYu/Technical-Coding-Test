@@ -1,5 +1,7 @@
 package com.example.david.technical_coding_test.model;
 
+import android.util.Log;
+
 import com.example.david.technical_coding_test.IPresenter;
 import com.example.david.technical_coding_test.model.data_model.list.ListDataBundle;
 import com.example.david.technical_coding_test.model.data_model.pager.PagerItem;
@@ -83,7 +85,7 @@ public class Model implements IModel {
 
         mListDataBundle = appendListItems(downloadMode, newListItems);
 
-        // 模擬三秒後取得資料
+        // 模擬1.5秒後取得資料
         final boolean finalIsSuccessful = isSuccessful;
 
         Tools.delayToDo(new Runnable() {
@@ -91,7 +93,7 @@ public class Model implements IModel {
             public void run() {
                 callback.onResult(finalIsSuccessful, mListDataBundle);
             }
-        }, 3000);
+        }, 1500);
     }
 
     private ListDataBundle appendListItems(int downloadMode, ArrayList<BaseData> newListItems) {
@@ -101,6 +103,10 @@ public class Model implements IModel {
         int lastPage = mListDataBundle.getLastPage();
 
         switch (downloadMode) {
+            case DownloadMode.INIT:
+                listItems = newListItems;
+                break;
+
             case DownloadMode.NEXT_PAGE:
                 listItems.addAll(newListItems);
                 lastPage++;
